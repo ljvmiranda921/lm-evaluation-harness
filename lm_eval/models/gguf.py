@@ -25,6 +25,8 @@ def get_result(logprobs, context_length):
     for i in range(idx, len(tokens)):
         token = tokens[i]
         top_tokens = logprobs["top_logprobs"][i]
+        if top_tokens is None or tokens_logprobs[i] is None:
+            continue
         top_token = max(top_tokens.keys(), key=lambda x: top_tokens[x])
         if top_token != token:
             is_greedy = False
