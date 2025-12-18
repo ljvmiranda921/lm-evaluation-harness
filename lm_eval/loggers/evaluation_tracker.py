@@ -252,12 +252,18 @@ class EvaluationTracker:
                         if self.public_repo
                         else self.results_repo_private
                     )
-                    self.api.create_repo(
-                        repo_id=repo_id,
-                        repo_type="dataset",
-                        private=not self.public_repo,
-                        exist_ok=True,
-                    )
+                    # Check if repo exists, only create if it doesn't
+                    try:
+                        self.api.repo_info(repo_id=repo_id, repo_type="dataset")
+                        eval_logger.info(f"Repository {repo_id} exists, uploading to existing repo")
+                    except Exception:
+                        eval_logger.info(f"Repository {repo_id} not found, creating new repo")
+                        self.api.create_repo(
+                            repo_id=repo_id,
+                            repo_type="dataset",
+                            private=not self.public_repo,
+                            exist_ok=True,
+                        )
                     self.api.upload_file(
                         repo_id=repo_id,
                         path_or_fileobj=str(file_results_aggregated),
@@ -343,12 +349,18 @@ class EvaluationTracker:
                         if self.public_repo
                         else self.details_repo_private
                     )
-                    self.api.create_repo(
-                        repo_id=repo_id,
-                        repo_type="dataset",
-                        private=not self.public_repo,
-                        exist_ok=True,
-                    )
+                    # Check if repo exists, only create if it doesn't
+                    try:
+                        self.api.repo_info(repo_id=repo_id, repo_type="dataset")
+                        eval_logger.info(f"Repository {repo_id} exists, uploading to existing repo")
+                    except Exception:
+                        eval_logger.info(f"Repository {repo_id} not found, creating new repo")
+                        self.api.create_repo(
+                            repo_id=repo_id,
+                            repo_type="dataset",
+                            private=not self.public_repo,
+                            exist_ok=True,
+                        )
                     try:
                         if self.gated_repo:
                             headers = build_hf_headers()
